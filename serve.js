@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const connectionDB = require('./util/database');
 const userRouters = require('./Routers/UserRoutes');
+const ShippingRouter = require('./Routers/ShippingDetRoutes')
 const app = express();
 require('dotenv').config();
 
@@ -21,3 +22,4 @@ const start = async()=>{
 }
 start();
 app.use('/ARA',userRouters);
+app.use('/ARA',ShippingRouter)
