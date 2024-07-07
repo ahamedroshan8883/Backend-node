@@ -6,8 +6,19 @@ const signup = async(req,res,next)=>{
     try{
         req.body.role = "user";
         console.log(req.body);
-        const user = await User.create(req.body);
-        res.status(200).json({user})
+        const {username,email,password,mobile,gender,role}=req.body;
+        const existingEmail = await User.findOne({email:email});
+        console.log(existingEmail);
+        if(existingEmail==null){
+            if(username !=='' && email !== '' && password !== '' && mobile !== '' && gender !== '' && role !=='' ){
+                const user = await User.create({username,email,password,mobile,gender,role});
+                res.status(200).json({user})
+            }else{
+                next(new customAPIError ('Certain details are missings', 500))
+            }
+        }else{
+            res.status(400).send('Already email is excisted');
+        }
     }catch(error){
         next(new customAPIError (error.message, 500))
         console.log(error);
