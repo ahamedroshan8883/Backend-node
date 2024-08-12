@@ -28,6 +28,7 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true,
         enum:['user','admin']
-    }
+    },
+    "avatar":{type:String}
 })
 module.exports = mongoose.model('User',userSchema);
