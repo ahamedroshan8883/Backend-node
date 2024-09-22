@@ -1,39 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const shippingSchema = new mongoose.Schema({
-  firstname: {
-    type: String,
-    required: true,
-  },
-  lastname: {
-    type: String,
-    required: true,
-  },
-  phonenumber: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  state: {
-    type: String,
-    required: true,
-  },
-  zipcode: {
-    type: String,
-    required: true,
-  },
-  OrderItems:{
+const cartSchema = new mongoose.Schema({
     products: [{
         id: { type: Number, required: true }, // Product ID
         title: { type: String, required: true },// Product name
@@ -45,7 +12,6 @@ const shippingSchema = new mongoose.Schema({
     totalQuantity: { type: Number, default: 0 }, // Total quantity of products in the cart
     totalPrice: { type: Number,  default: 0 }, // Total price of products in the cart
     user: { type: String, required: true } 
-      }  
-});
+})
 
-module.exports = mongoose.model("Shipping", shippingSchema);
+module.exports = mongoose.model('cart',cartSchema);

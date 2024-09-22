@@ -1,7 +1,6 @@
 const customAPIError = require("../Error/customAPIError");
 const User = require("../Models/userModels");
 const jwt = require('jsonwebtoken');
-const fs = require("fs");
 
 const signup = async(req,res,next)=>{
     try{
@@ -26,30 +25,6 @@ const signup = async(req,res,next)=>{
     }
 }
 
-const changeAvatar = async(req,res,next)=>{
-    try{
-        const user = req.user;
-        if(!req.files||!req.files.avatar){
-            return next(new customAPIError('Please choose a file',422));
-        }
-        const userData = await User.findOne({email:user.email});
-        if(!user){
-            next(new customAPIError('User not found'),404);
-        }
-        if(userData.avatar){
-            const oldAvatarPath = path.join(__dirname,"..","uploads",userData.avatar);
-            fs.unlink(oldAvatarPath,(err)=>{
-                if(err){
-                    console.error("Failed to delete the old");
-                    return next(new customAPIError("Failed to delete the old",500));
-                }
-            });
-        }
-        
-    }catch(error){
-        next(new customAPIError(error.message, 500));
-    }
-}
 const signin = async(req,res,next)=>{
     const {email,password} = req.body;
     console.log({email,password});
