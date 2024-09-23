@@ -9,13 +9,9 @@ require('dotenv').config();
 
 app.use(cors());
 app.use(cors({
-    origin: 'http://localhost:3000/Login', // Replace with your frontend's URL
-    credentials: true, // Enable cookies if necessary
-  }));
-  app.use(cors({
-    origin: 'https://ahamedroshan8883.github.io/Login', // Replace with your frontend's URL
-    credentials: true, // Enable cookies if necessary
-  }));
+  origin: 'http://localhost:3000',  // Replace with your frontend's URL
+  credentials: true
+}));
 app.use(express.json());
 
 const start = async()=>{
