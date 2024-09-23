@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "Backend-node",
   "version": "1.0.0",
   "description": "For authentications and storing data in database through this middle ware.",
   "main": "server.js",
