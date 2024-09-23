@@ -8,6 +8,10 @@ const app = express();
 require('dotenv').config();
 
 app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000/' || 'https://ahamedroshan8883.github.io/online-shopping/', // Replace with your frontend's URL
+    credentials: true, // Enable cookies if necessary
+  }));
 app.use(express.json());
 
 const start = async()=>{
