@@ -73,7 +73,7 @@ const getProfileByEmail = async (req,res,next)=>{
 }
 const deleteAccount = async(req,res,next)=>{
     try{
-        const Profile = await User.findOneDelete({email:req.params.email});
+        const Profile = await User.findOneAndDelete({email:req.params.email});
         console.log(Profile);
         if(!Profile){
             res.status(404).send("profile not found");
