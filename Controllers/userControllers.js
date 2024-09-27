@@ -71,4 +71,15 @@ const getProfileByEmail = async (req,res,next)=>{
         next (new customAPIError(500,error)); 
     }
 }
-module.exports = {signup,signin,EditProfileByEmail,getProfileByEmail};
+const deleteAccount = async(req,res,next)=>{
+    try{
+        const Profile = await User.findOneDelete({email:req.params.email});
+        if(!Profile){
+            res.status(404).send("profile not found");
+        }
+        res.status(200).send("Profile successfully deleted");
+    }catch(error){
+        next(new customAPIError(500,error))
+    }
+}
+module.exports = {signup,signin,EditProfileByEmail,getProfileByEmail,deleteAccount};
