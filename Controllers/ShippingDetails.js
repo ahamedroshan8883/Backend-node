@@ -1,4 +1,5 @@
 const Shipping = require("../Models/ShippingDetailModel");
+const customAPIError = require("../Error/customAPIError");
 const User = require("../Models/userModels");
 const postShippingDetail = async (req, res) => {
   try {
@@ -25,5 +26,16 @@ const postShippingDetail = async (req, res) => {
     res.status(500).json({ message: "An error occurred while saving the shipping details" });
   }
 };
+const getOrdersByUser = async(req,res,next)=>{
+  try{
+    const OrderDetails = await Shipping.find({user:req.params});
+    if(!OrderDetails){
+      res.status(404).send("Order Items Not found");
+    }
+    res.status(200).json(OrderDetails);
+  }catch(error){
+    next(new customAPIError(500,error));
+  }
+}
 
-module.exports = postShippingDetail;
+module.exports = {postShippingDetail,getOrdersByUser};

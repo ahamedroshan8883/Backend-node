@@ -42,4 +42,22 @@ const signin = async(req,res,next)=>{
     }
 }
 
-module.exports = {signup,signin};
+const EditProfileByEmail = async (req, res, next) => {
+        try {
+            const { email } = req.params;  // Assuming you're extracting 'email' from the request parameters.
+            const profile = await User.findOne({ email });  // 'profile' is the retrieved user based on email.
+    
+            if (!profile) {
+                return res.status(404).json({ message: "Profile not found" });
+            }
+            profile.mobile = req.body.mobile;
+            profile.username = req.body.username;
+            profile.gender = req.body.gender;
+            await profile.save();
+            res.status(200).send("profile updated");
+        } catch (error) {
+            console.error(error);  // Log the error for debugging
+           next (new customAPIError(500,error)); // Sending server error response
+        }
+    };
+module.exports = {signup,signin,EditProfileByEmail};
