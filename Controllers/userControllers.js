@@ -12,7 +12,7 @@ const signup = async(req,res,next)=>{
         if(existingEmail==null){
             if(username !=='' && email !== '' && password !== '' && mobile !== '' && gender !== '' && role !=='' ){
                 const user = await User.create({username,email,password,mobile,gender,role});
-                res.status(200).json({user})
+                res.status(201).json({user})
             }else{
                 next(new customAPIError ('Certain details are missings', 500))
             }
@@ -54,10 +54,21 @@ const EditProfileByEmail = async (req, res, next) => {
             profile.username = req.body.username;
             profile.gender = req.body.gender;
             await profile.save();
-            res.status(200).send("profile updated");
+            res.status(201).send("profile updated");
         } catch (error) {
             console.error(error);  // Log the error for debugging
            next (new customAPIError(500,error)); // Sending server error response
         }
     };
-module.exports = {signup,signin,EditProfileByEmail};
+const getProfileByEmail = async (req,res,next)=>{
+    try{
+        const Profile = await User.findOne({email:req.params.email});
+        if(!Profile){
+            res.status(404).send("profile not found");
+        }
+        res.status(200).json(Profile);
+    }catch(error){
+        next (new customAPIError(500,error)); 
+    }
+}
+module.exports = {signup,signin,EditProfileByEmail,getProfileByEmail};
