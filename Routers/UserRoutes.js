@@ -5,6 +5,6 @@ const userRouters = express.Router();
 userRouters.post('/signup',signup);
 userRouters.post('/signin',signin);
 userRouters.post('/EditProfile/:email',EditProfileByEmail);
-userRouters.get('getProfile/:email',getProfileByEmail);
+userRouters.get('/getProfile/:email',getProfileByEmail);
 
 module.exports =userRouters;
