@@ -32,8 +32,6 @@ const getOrdersByUser = async(req,res,next)=>{
     if(!OrderDetails){
       res.status(404).send("Order Items Not found");
     }
-    console.log(email);
-    
     res.status(200).json(OrderDetails);
   }catch(error){
     console.log(error);
