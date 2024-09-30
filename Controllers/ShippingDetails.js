@@ -28,12 +28,16 @@ const postShippingDetail = async (req, res) => {
 };
 const getOrdersByUser = async(req,res,next)=>{
   try{
-    const OrderDetails = await Shipping.find({user:req.params});
+    const OrderDetails = await Shipping.find({email:req.params.email});
     if(!OrderDetails){
       res.status(404).send("Order Items Not found");
     }
+    console.log(email);
+    
     res.status(200).json(OrderDetails);
   }catch(error){
+    console.log(error);
+    
     next(new customAPIError(500,error));
   }
 }
