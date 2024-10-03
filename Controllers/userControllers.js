@@ -28,6 +28,7 @@ const signup = async(req,res,next)=>{
 const signin = async(req,res,next)=>{
     const {email,password} = req.body;
     console.log({email,password});
+
     const user = await User.findOne({email,password});
     try{
         if(!user){
