@@ -12,6 +12,10 @@ app.use(cors({
   origin: 'http://localhost:3000',  // Replace with your frontend's URL
   credentials: true
 }));
+app.use(cors({
+    origin:'https://ahamedroshan8883.github.io',
+    credentials: true
+}))
 app.use(express.json());
 
 const start = async()=>{
