@@ -7,15 +7,22 @@ const cartRotuer = require('./Routers/CartRouter');
 const app = express();
 require('dotenv').config();
 
-app.use(cors());
+const allowedOrigins = ['http://localhost:3000', 'https://ahamedroshan8883.github.io'];
+
 app.use(cors({
-  origin: 'http://localhost:3000/login',
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if the request's origin is in the allowedOrigins array
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow credentials (cookies, authorization headers)
 }));
-app.use(cors({
-    origin:'https://ahamedroshan8883.github.io',
-    credentials: true
-}))
 app.use(express.json());
 
 const start = async()=>{
