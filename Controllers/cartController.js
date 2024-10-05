@@ -20,7 +20,7 @@ const AddCartItem_IncreaseQuan = async (req,res,next)=>{
                 title:reqBody.title,
                 image:reqBody.image,
                 price:reqBody.price,
-                quantity:1,
+                quantity:reqBody.quantity,
                 selectedSize:reqBody.selectedSize
             }],
             totalQuantity:1,
