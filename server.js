@@ -9,7 +9,7 @@ require('dotenv').config();
 
 app.use(cors());
 app.use(cors({
-  origin: 'http://localhost:3000',  // Replace with your frontend's URL
+  origin: 'http://localhost:3000/login',
   credentials: true
 }));
 app.use(cors({
