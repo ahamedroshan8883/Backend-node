@@ -8,7 +8,10 @@ const app = express();
 require('dotenv').config();
 
 const allowedOrigins = ['http://localhost:3000', 'https://ahamedroshan8883.github.io'];
-
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal Server Error', error: err.message });
+});
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl requests)

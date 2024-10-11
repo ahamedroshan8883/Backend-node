@@ -2,7 +2,7 @@ const customAPIError = require("../Error/customAPIError");
 const cartModel = require("../Models/cartModel");
 const userModels = require("../Models/userModels");
 
-const AddCartItem_IncreaseQuan = async (req,res,next)=>{
+const AddCartItem = async (req,res,next)=>{
     const reqBody = req.body;
     const user = await userModels.findOne({email:reqBody.user})
     console.log(reqBody);
@@ -15,7 +15,7 @@ const AddCartItem_IncreaseQuan = async (req,res,next)=>{
         
         const ExistingCart = await cartModel.findOne({user:reqBody.user});
         // If a cart already existing at that email it will add that particular product.
-            console.log(ExistingCart.products);
+            console.log(ExistingCart);
             
         
         if(!ExistingCart){
@@ -36,8 +36,9 @@ const AddCartItem_IncreaseQuan = async (req,res,next)=>{
             await cartModel.create(cart);
             return res.status(200).send("Successfully added");
         }else{
-            const prodcutIndex = ExistingCart.products.findIndex(item=>item.id===reqBody.id &&  reqBody.selectedSize===item.selectedSize );
+            const prodcutIndex = ExistingCart.products.findIndex(item=>item.id===reqBody.id &&  reqBody.selectedSize===item.selectedSize );            
             const ExistingProduct = ExistingCart.products[prodcutIndex];
+            console.log(ExistingProduct);
             if(prodcutIndex !==-1){
                 ExistingProduct.quantity += reqBody.quantity;
                 ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(reqBody.quantity);
@@ -65,7 +66,31 @@ const getCartByUser = async(req,res,next)=>{
     }catch(error){
         next(new customAPIError(error,500));
     }
-}   
+}
+
+const IncreaseQuantity = async(req,res,next)=>{
+    const reqBody = req.body;
+    const Cart = await cartModel.findOne({user:reqBody.user});
+    try{
+        const productIndex = Cart.products.findIndex(item=>item.id===reqBody.id && item.selectedSize===reqBody.selectedSize);
+        const product = Cart.products[productIndex];
+        // console.log(product);
+        
+        if(productIndex!==-1){
+            if(product.quantity>=1){
+                product.quantity+=1;
+                Cart.totalQuantity+=1;
+                Cart.totalPrice+=Number(product.price);
+                await Cart.save();
+                res.status(201).send("Item quantity Decreased");
+            }
+        }else{
+            return next(new customAPIError("no product found",404));
+        }
+    }catch(error){
+        next(new customAPIError(error,500));
+    }
+}
 const DecreaseQuantity = async(req,res,next)=>{
     const reqBody = req.body;
     const Cart = await cartModel.findOne({user:reqBody.user});
@@ -145,4 +170,4 @@ const clearCart = async(req, res, next) => {
     }
 };
 
-module.exports= {AddCartItem_IncreaseQuan,DecreaseQuantity,RemoveCartItem,getCartByUser,clearCart};
+module.exports= {AddCartItem,IncreaseQuantity,DecreaseQuantity,RemoveCartItem,getCartByUser,clearCart};
