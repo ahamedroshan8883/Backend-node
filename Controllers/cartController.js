@@ -14,38 +14,43 @@ const AddCartItem_IncreaseQuan = async (req,res,next)=>{
         }
         
         const ExistingCart = await cartModel.findOne({user:reqBody.user});
-        const cart ={
-            products:[{
-                id:reqBody.id,
-                title:reqBody.title,
-                image:reqBody.image,
-                price:reqBody.price,
-                quantity:reqBody.quantity,
-                selectedSize:reqBody.selectedSize
-            }],
-            totalQuantity:1,
-            totalPrice:Number(1)*Number(reqBody.price),
-            user:reqBody.user
-    }
-        if(!ExistingCart){
-            
-            await cartModel.create(cart);
-            res.status(200).send("Successfully added");
-        }else{
+        // If a cart already existing at that email it will add that particular product.
             console.log(ExistingCart.products);
             
+        
+        if(!ExistingCart){
+            const cart ={
+                products:[{
+                    id:reqBody.id,
+                    title:reqBody.title,
+                    image:reqBody.image,
+                    price:reqBody.price,
+                    quantity:reqBody.quantity,
+                    selectedSize:reqBody.selectedSize
+                }],
+                totalQuantity:reqBody.quantity,
+                totalPrice:Number(reqBody.quantity)*Number(reqBody.price),
+                user:reqBody.user
+        }
+            //cart dosen't exist create a cart. 
+            await cartModel.create(cart);
+            return res.status(200).send("Successfully added");
+        }else{
             const prodcutIndex = ExistingCart.products.findIndex(item=>item.id===reqBody.id &&  reqBody.selectedSize===item.selectedSize );
             const ExistingProduct = ExistingCart.products[prodcutIndex];
             if(prodcutIndex !==-1){
-                ExistingProduct.quantity += 1;
+                ExistingProduct.quantity += reqBody.quantity;
+                ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(reqBody.quantity);
+                ExistingCart.totalPrice += Number(reqBody.quantity)*Number(reqBody.price);
+                await ExistingCart.save();
+                res.status(200).send("Successfully added")
             }else{
-                console.log("hii");
                 ExistingCart.products.push(reqBody);
+                ExistingProduct.quantity += reqBody.quantity;
+                ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(reqBody.quantity);
+                ExistingCart.totalPrice += Number(reqBody.quantity)*Number(reqBody.price);
+                res.status(200).send("Successfully added")
             }
-            ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(1);
-            ExistingCart.totalPrice += Number(1)*Number(reqBody.price);
-            await ExistingCart.save();
-            res.status(200).send("Successfully added")
         }
     }catch(error){
         next(new customAPIError(error,500));
