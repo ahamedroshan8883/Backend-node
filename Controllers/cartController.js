@@ -47,7 +47,7 @@ const AddCartItem = async (req,res,next)=>{
                 ExistingCart.totalPrice += Number(reqBody.quantity)*Number(reqBody.price);
             }else{
                 ExistingCart.products.push(reqBody);
-                console.log(ExistingCart.products);
+                // console.log(ExistingCart.products);
                 ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(reqBody.quantity);
                 ExistingCart.totalPrice += Number(reqBody.quantity)*Number(reqBody.price);
             }
