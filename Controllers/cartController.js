@@ -15,7 +15,7 @@ const AddCartItem = async (req,res,next)=>{
         
         const ExistingCart = await cartModel.findOne({user:reqBody.user});
         // If a cart already existing at that email it will add that particular product.
-            console.log(reqBody);
+            // console.log(ExistingCart);
             
         
         if(!ExistingCart){
@@ -31,26 +31,28 @@ const AddCartItem = async (req,res,next)=>{
                 totalQuantity:reqBody.quantity,
                 totalPrice:Number(reqBody.quantity)*Number(reqBody.price),
                 user:reqBody.user
-        }
+            }
             //cart dosen't exist create a cart. 
             await cartModel.create(cart);
             return res.status(200).send("Successfully added");
         }else{
             const prodcutIndex = ExistingCart.products.findIndex(item=>item.id===reqBody.id &&  reqBody.selectedSize===item.selectedSize );  
             const ExistingProduct = ExistingCart.products[prodcutIndex];
+            // console.log(prodcutIndex);
+            
             if(prodcutIndex >-1){
-                console.log(ExistingProduct);
+                console.log("exist"+ExistingProduct);
                 ExistingProduct.quantity += reqBody.quantity;
                 ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(reqBody.quantity);
                 ExistingCart.totalPrice += Number(reqBody.quantity)*Number(reqBody.price);
-                await ExistingCart.save();
-                res.status(200).send("Successfully added")
             }else{
                 ExistingCart.products.push(reqBody);
+                console.log(ExistingCart.products);
                 ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(reqBody.quantity);
                 ExistingCart.totalPrice += Number(reqBody.quantity)*Number(reqBody.price);
-                res.status(200).send("Successfully added")
             }
+            await ExistingCart.save();
+            res.status(200).send("Successfully added")
         }
     }catch(error){
         next(new customAPIError(error,500));
