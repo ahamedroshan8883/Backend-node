@@ -15,7 +15,7 @@ const AddCartItem = async (req,res,next)=>{
         
         const ExistingCart = await cartModel.findOne({user:reqBody.user});
         // If a cart already existing at that email it will add that particular product.
-            console.log(ExistingCart);
+            console.log(reqBody);
             
         
         if(!ExistingCart){
@@ -36,10 +36,10 @@ const AddCartItem = async (req,res,next)=>{
             await cartModel.create(cart);
             return res.status(200).send("Successfully added");
         }else{
-            const prodcutIndex = ExistingCart.products.findIndex(item=>item.id===reqBody.id &&  reqBody.selectedSize===item.selectedSize );            
+            const prodcutIndex = ExistingCart.products.findIndex(item=>item.id===reqBody.id &&  reqBody.selectedSize===item.selectedSize );  
             const ExistingProduct = ExistingCart.products[prodcutIndex];
-            console.log(ExistingProduct);
-            if(prodcutIndex !==-1){
+            if(prodcutIndex >-1){
+                console.log(ExistingProduct);
                 ExistingProduct.quantity += reqBody.quantity;
                 ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(reqBody.quantity);
                 ExistingCart.totalPrice += Number(reqBody.quantity)*Number(reqBody.price);
@@ -47,7 +47,6 @@ const AddCartItem = async (req,res,next)=>{
                 res.status(200).send("Successfully added")
             }else{
                 ExistingCart.products.push(reqBody);
-                ExistingProduct.quantity += reqBody.quantity;
                 ExistingCart.totalQuantity = Number(ExistingCart.totalQuantity)+Number(reqBody.quantity);
                 ExistingCart.totalPrice += Number(reqBody.quantity)*Number(reqBody.price);
                 res.status(200).send("Successfully added")
