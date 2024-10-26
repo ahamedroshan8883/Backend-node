@@ -1,6 +1,7 @@
 const customAPIError = require("../Error/customAPIError");
 const User = require("../Models/userModels");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const signup = async(req,res,next)=>{
     try{
@@ -11,7 +12,8 @@ const signup = async(req,res,next)=>{
         console.log(existingEmail);
         if(existingEmail==null){
             if(username !=='' && email !== '' && password !== '' && mobile !== '' && gender !== '' && role !=='' ){
-                const user = await User.create({username,email,password,mobile,gender,role});
+                let hashPassword = bcrypt.hash(password,10)
+                const user = await User.create({username,email,hashPassword,mobile,gender,role});
                 res.status(201).json({user})
             }else{
                 next(new customAPIError ('Certain details are missings', 500))
@@ -29,15 +31,20 @@ const signin = async(req,res,next)=>{
     const {email,password} = req.body;
     console.log({email,password});
 
-    const user = await User.findOne({email,password});
+    const user = await User.findOne({email});
     try{
         if(!user){
-            res.status(500).send('Invalid email/password');
-        }else{
+           return res.status(404).send('No account found');
+        }
+            const isPasswordMatch = bcrypt.compare(password,user.password);
+
+            if(!isPasswordMatch){
+                return res.status(500).send('Invalid email/password');
+            }
             const {email,role,gender,mobile,username} = user;
             const token = jwt.sign({email,role,gender,mobile,username},process.env.JSON_SECRETKEY,{expiresIn:'18000s'});
             res.status(200).send(token);
-        }   
+           
     }catch(error){
         next(new customAPIError(error,500));
     }
