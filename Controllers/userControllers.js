@@ -13,7 +13,7 @@ const signup = async(req,res,next)=>{
         if(existingEmail==null){
             if(username !=='' && email !== '' && password !== '' && mobile !== '' && gender !== '' && role !=='' ){
                 let hashPassword = bcrypt.hash(password,10)
-                const user = await User.create({username,email,hashPassword,mobile,gender,role});
+                const user = await User.create({username,email,password:hashPassword,mobile,gender,role});
                 res.status(201).json({user})
             }else{
                 next(new customAPIError ('Certain details are missings', 500))
