@@ -12,7 +12,7 @@ const signup = async(req,res,next)=>{
         console.log(existingEmail);
         if(existingEmail==null){
             if(username !=='' && email !== '' && password !== '' && mobile !== '' && gender !== '' && role !=='' ){
-                let hashPassword = bcrypt.hash(password,10)
+                let hashPassword = await bcrypt.hash(password,10)
                 const user = await User.create({username,email,password:hashPassword,mobile,gender,role});
                 res.status(201).json({user})
             }else{
